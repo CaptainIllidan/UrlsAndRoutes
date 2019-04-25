@@ -26,7 +26,9 @@ namespace UrlsAndRoutes
             app.UseStatusCodePages();
             app.UseMvc(routes=>
             {
-                routes.MapRoute(name: "default", template: "{controller}/{action}");
+                routes.MapRoute(
+                    name: "MyRoute",
+                    template: "{controller=Home}/{action=Index}/{id?}/{*catchall}");
             });
         }
     }
