@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.AspNetCore.Routing;
+using UrlsAndRoutes.Infrastucture;
 
 namespace UrlsAndRoutes
 {
@@ -17,6 +18,8 @@ namespace UrlsAndRoutes
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<RouteOptions>(options =>
+                options.ConstraintMap.Add("weekday", typeof(WeekDayConstraint)));
             services.AddMvc();
         }
 
@@ -26,19 +29,20 @@ namespace UrlsAndRoutes
             app.UseDeveloperExceptionPage();
             app.UseStaticFiles();
             app.UseStatusCodePages();
-            app.UseMvc(routes =>
+            app.UseMvc(routes=>
             {
+                //routes.MapRoute(
+                //    name: "NewRoute",
+                //    template: "App/Do{action}",
+                //    defaults: new { controller = "Home" });
+
                 routes.MapRoute(
-                    name: "MyRoute",
-                    template: "{controller}/{action}/{id?}",
-                    defaults: new {controller = "Home", action = "Index"},
-                    constraints: new {
-                        id = new CompositeRouteConstraint(
-                            new IRouteConstraint[] {
-                                new AlphaRouteConstraint(),
-                                new MinLengthRouteConstraint(6)
-                        })
-                    });
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "out",
+                    template: "outbound/{controller=Home}/{action=Index}");
             });
         }
     }
